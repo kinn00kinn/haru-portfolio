@@ -1,0 +1,51 @@
+# .github/workflows/deploy.yml
+name: Deploy to GitHub Pages
+
+# main ブランチに push されたときに実行
+on:
+  push:
+    branches: [ "main" ]
+
+# GITHUB_TOKEN の権限を設定
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      # 1. リポジトリをチェックアウト
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # 2. Node.js をセットアップ
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      # 3. 依存関係をインストール
+      - name: Install dependencies
+        run: npm install
+
+      # 4. アプリをビルド (vite.config.ts の 'base' 設定がここで使われる)
+      - name: Build
+        run: npm run build
+
+      # 5. GitHub Pages にデプロイするための設定
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+
+      # 6. ビルド成果物 (dist フォルダ) をアーティファクトとしてアップロード
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: './dist' # vite のビルド出力フォルダ
+
+      # 7. GitHub Pages にデプロイ
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
