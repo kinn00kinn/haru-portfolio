@@ -14,7 +14,7 @@ const Home = () => (
 const About = () => (
   <div>
     <h2>About Me</h2>
-    <p>自己紹介ページです。</p>
+    <p>自己紹介ページです。aaa</p>
   </div>
 );
 
